@@ -36,7 +36,7 @@
             dataType:'json',
             success:function (data) {
                 if (data.code===200){
-                    alert('Success');
+                    alert('Đã thêm vào giỏ hàng');
                 }
             },
             error:function () {
@@ -48,11 +48,47 @@
 
     function updateCart(event) {
         event.preventDefault();
-        alert('ABC');
+        let urlUpdateCart=$('.update-cart-url').data('url');
+        let id=$(this).data('id');
+        let quantity=$(this).parents('.parents').find('input.quantity').val();
+        $.ajax({
+            method:"GET",
+            url:urlUpdateCart,
+            data:{id: id,quantity:quantity},
+            success:function (data){
+                if (data.code===200){
+                    $('.cart-wrapper').html(data.cart_component);
+                    alert('Đã cập nhật');
+                }
+            },
+            error:function (){
+
+            }
+        })
+    }
+    function deleteCart(event){
+        event.preventDefault();
+        let urlDelete=$('.cart').data('url');
+        let id=$(this).data('id');
+        $.ajax({
+            method:"GET",
+            url:urlDelete,
+            data:{id: id},
+            success:function (data){
+                if (data.code===200){
+                    $('.cart-wrapper').html(data.cart_component);
+                    alert('Đã xóa');
+                }
+            },
+            error:function (){
+
+            }
+        })
     }
     $(function (){
         $('.addToCart').on('click',addToCart);
-        $('.updateCart').on('click',updateCart);
+        $(document).on('click','.update-cart',updateCart);
+        $(document).on('click','.delete-cart',deleteCart);
     })
 </script>
 </html>

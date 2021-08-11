@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -52,15 +53,30 @@ class PageController extends Controller
 
     }
 
-    public function updateCart(){
-
+    public function updateCart(Request $request){
+        if ($request->id && $request->quantity){
+            $carts=session()->get('cart');
+            $carts[$request->id]['quantity']=$request->quantity;
+            session()->put('cart',$carts);
+            $carts=session()->get('cart');
+            $cartComponent=view('pages.partial.cart_component',compact('carts'))->render();
+            return response()->json(['cart_component'=>$cartComponent,'code'=>200],200);
+        }
     }
 
+    public function deleteCart(Request $request){
+        if ($request->id ){
+            $carts=session()->get('cart');
+            unset($carts[$request->id]);
+            session()->put('cart',$carts);
+            $carts=session()->get('cart');
+            $cartComponent=view('pages.partial.cart_component',compact('carts'))->render();
+            return response()->json(['cart_component'=>$cartComponent,'code'=>200],200);
+        }
+    }
     public function cart(){
         $categories=Category::get();
         $carts=session()->get('cart');
-//        echo "<pre>";
-//        print_r($carts);
         return view('pages.cart',compact('categories','carts'));
 
 

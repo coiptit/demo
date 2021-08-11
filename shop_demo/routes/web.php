@@ -69,3 +69,4 @@ Route::get('/contact',[PageController::class,'contact'])->name('contact');
 Route::get('/detail/{id}',[PageController::class,'detail'])->name('detail');
 Route::get('/product/add-to-cart/{id}',[PageController::class,'addToCart'])->name('addToCart');
 Route::get('/product/update-cart',[PageController::class,'updateCart'])->name('updateCart');
+Route::get('/product/delete-cart',[PageController::class,'deleteCart'])->name('deleteCart');
