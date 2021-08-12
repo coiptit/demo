@@ -23,9 +23,9 @@ use App\Http\Controllers\PageController;
 //    return view('welcome');
 //});
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+//Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//    return view('dashboard');
+//})->name('dashboard');
 
 Route::get('/email/verity',function (){
    return view('auth.verify-email');
@@ -70,3 +70,6 @@ Route::get('/detail/{id}',[PageController::class,'detail'])->name('detail');
 Route::get('/product/add-to-cart/{id}',[PageController::class,'addToCart'])->name('addToCart');
 Route::get('/product/update-cart',[PageController::class,'updateCart'])->name('updateCart');
 Route::get('/product/delete-cart',[PageController::class,'deleteCart'])->name('deleteCart');
+Route::middleware(['auth:sanctum', 'verified'])->post('/order',[PageController::class,'order'])->name('order');
+Route::middleware(['auth:sanctum', 'verified'])->post('/contactPost',[PageController::class,'contactPost'])->name('contactPost');
+

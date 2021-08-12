@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMail;
+use App\Mail\OrderMail;
 use App\Models\Category;
 use App\Models\Product;
 use http\Env\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PageController extends Controller
 {
@@ -28,6 +32,13 @@ class PageController extends Controller
         $categories=Category::get();
         $products=Product::where('cate_id','like',"%{$cate_id}%")->get();
         return view('pages.category',compact('products','categories'));
+    }
+
+    public function detail($id){
+        $categories=Category::get();
+        $products=Product::whereId($id)->get();
+        $product=$products[0];
+        return view('pages.detail',compact('product','categories'));
     }
 
     public function addToCart($id){
@@ -82,17 +93,40 @@ class PageController extends Controller
 
     }
 
+    public function order(Request $request){
+        $email=Auth::user()->email;
+        $categories=Category::get();
+        $carts=session()->get('cart');
+        $orders=[
+            'name'=>$request->input('name'),
+            'address'=>$request->input('address'),
+            'phone'=>$request->input('phone'),
+            'message'=>$request->input('message'),
+            'carts'=>$carts
+        ];
+
+        Mail::to($email)->send(new OrderMail($orders));
+        Mail::to('coi7420@gmail.com')->send(new OrderMail($orders));
+        session()->forget('cart');
+        return view('pages.order_success',compact('categories'));
+    }
+
     public function contact(){
         $categories=Category::get();
         return view('pages.contact',compact('categories'));
     }
 
-    public function detail($id){
+    public function contactPost(Request $request){
         $categories=Category::get();
-        $products=Product::whereId($id)->get();
-        $product=$products[0];
-        return view('pages.detail',compact('product','categories'));
+        $email=Auth::user()->email;
+        $contacts=[
+            'name'=>$request->input('name'),
+            'email'=>$email,
+            'message'=>$request->input('message')
+        ];
+        Mail::to($email)->send(new ContactMail($contacts));
+        Mail::to('coi7420@gmail.com')->send(new ContactMail($contacts));
+        return view('pages.contact_success',compact('categories'));
     }
-
 
 }
